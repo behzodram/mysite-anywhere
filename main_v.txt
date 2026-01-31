@@ -1,3 +1,4 @@
+v 1.0.4 => main: Uncomment cred line && fb admin init line
 v 1.0.3 => main: app.py uncomment => redis config && app = Flask(__name__)
 v 1.0.2 => main: app.py ga navbat bilan uncommenting... 4lines uncommented
 v 1.0.1 => main: VS Code Modify add new file README.md

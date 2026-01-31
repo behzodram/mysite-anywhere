@@ -19,18 +19,18 @@ r = redis.Redis(
     ssl=True
 )
 
+# =====================
+# Firebase Admin
+# =====================
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# # =====================
-# # Firebase Admin
-# # =====================
-# cred = credentials.Certificate("serviceAccountKey.json")
-# firebase_admin.initialize_app(cred)
 
 # # =====================
 # # Routes
