@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+import os
 import redis
 import firebase_admin
 from firebase_admin import credentials, auth
+from flask import Flask, render_template, request, jsonify, redirect, url_for
+
 # from flask import Flask, render_template
 
 # =====================
@@ -32,8 +34,9 @@ if __name__ == "__main__":
 # # =====================
 # # Firebase Admin
 # # =====================
-# cred = credentials.Certificate("serviceAccountKey.json")
-# firebase_admin.initialize_app(cred)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+cred_path = os.path.join(BASE_DIR, 'serviceAccountKey.json')
+cred = credentials.Certificate(cred_path)
 
 
 
