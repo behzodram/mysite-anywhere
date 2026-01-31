@@ -4,9 +4,8 @@ import random
 r = redis.Redis(
     host="evident-panda-61482.upstash.io",
     port=6379,
-    password="***",
-    ssl=True,
-    decode_responses=True
+    password="AfAqAAIncDE0YTA3ZjRlY2ZlMTY0YzM3YWE1ODY2MzRjZmRiMmFhM3AxNjE0ODI",
+    ssl=True
 )
 
 def start() -> str:

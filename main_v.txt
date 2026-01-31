@@ -1,3 +1,4 @@
+v 1.2.7 => main: Redisni test qilish uchun red.py added
 v 1.2.6 => main: 3ta fayl o'zgardi, user id bekor qilindi
 v 1.2.5 => main: remove user id html
 v 1.2.4 => main: index htmldan user id check olindi
