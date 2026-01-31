@@ -1,59 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Flask Test</title>
+   <meta charset="UTF-8">
+   <title>Telegram Login</title>
 </head>
 <body>
-    <h1>Salom Flask 👋</h1>
-    <p>Windows VS Code tahrirladi</p>
-    <p>WSGI.py da venv path remove yoki chnge old code.</p>
-    <p>Hammasi uncommented</p>
+
+<h2>Telegram botdan kelgan 4 xonali kodni kiriting</h2>
+
+<input id="code" maxlength="4">
+<button onclick="verify()">Verify</button>
+
+<p id="status"></p>
+
+<script>
+async function verify() {
+    const code = document.getElementById("code").value;
+    const user_id = localStorage.getItem("tg_user_id");
+
+    if (!user_id) {
+        document.getElementById("status").innerText =
+            "Telegram botdan kiring!";
+        return;
+    }
+
+    const res = await fetch("/verify", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ user_id, code })
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+        window.location.href = "/dashboard";
+    } else {
+        document.getElementById("status").innerText = data.msg;
+    }
+}
+</script>
+
 </body>
 </html>
-
-
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Telegram Login</title>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<h2>Telegram botdan kelgan 4 xonali kodni kiriting</h2>-->
-
-<!--<input id="code" maxlength="4">-->
-<!--<button onclick="verify()">Verify</button>-->
-
-<!--<p id="status"></p>-->
-
-<!--<script>-->
-<!--async function verify() {-->
-<!--    const code = document.getElementById("code").value;-->
-<!--    const user_id = localStorage.getItem("tg_user_id");-->
-
-<!--    if (!user_id) {-->
-<!--        document.getElementById("status").innerText =-->
-<!--            "Telegram botdan kiring!";-->
-<!--        return;-->
-<!--    }-->
-
-<!--    const res = await fetch("/verify", {-->
-<!--        method: "POST",-->
-<!--        headers: {"Content-Type": "application/json"},-->
-<!--        body: JSON.stringify({ user_id, code })-->
-<!--    });-->
-
-<!--    const data = await res.json();-->
-
-<!--    if (data.ok) {-->
-<!--        window.location.href = "/dashboard";-->
-<!--    } else {-->
-<!--        document.getElementById("status").innerText = data.msg;-->
-<!--    }-->
-<!--}-->
-<!--</script>-->
-
-<!--</body>-->
-<!--</html>-->
