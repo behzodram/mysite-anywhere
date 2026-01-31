@@ -1,3 +1,4 @@
+v 1.1.2 => main: venv path webga qo'shildi, pip install qilindi endi fb based line uncomment test .gitignoredagi __pycache__ nom o'chirildi
 v 1.1.1 => main: venv path webga qo'shildi, pip install qilindi endi fb based line uncomment test
 v 1.1.0 => main: venv gitignored for remote server
 v 1.0.9 => main: moammo v 1.0.3 da ekan && route f modif home => index
