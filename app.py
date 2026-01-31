@@ -53,7 +53,8 @@ def verify():
         return jsonify({
             "ok": False,
             "msg": "Invalid or expired code",
-            "codes": codes
+            # "codes": codes
+            # was just for debugging
         }), 401
 
     # 🔥 xavfsizlik: barcha kodlarni o‘chiramiz
