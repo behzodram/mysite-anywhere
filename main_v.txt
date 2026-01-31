@@ -1,3 +1,4 @@
+v 1.1.4 => main: WSGI tahrirladi no FB lines success, endi uncomment bilan test
 v 1.1.3 => main: commented FB lines again for WSGI chage
 v 1.1.2 => main: venv path webga qo'shildi, pip install qilindi endi fb based line uncomment test .gitignoredagi __pycache__ nom o'chirildi
 v 1.1.1 => main: venv path webga qo'shildi, pip install qilindi endi fb based line uncomment test
