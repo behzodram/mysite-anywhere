@@ -46,10 +46,15 @@ def verify():
     if not code:
         return jsonify({"ok": False, "msg": "Code missing"}), 400
 
-    codes = r.lrange("verify_codes", 0, -1)
+    codes_raw = r.lrange("verify_codes", 0, -1)
+    codes = [c.decode("utf-8") for c in codes_raw]
 
     if code not in codes:
-        return jsonify({"ok": False, "msg": "Invalid or expired code", "kodes": codes}), 401
+        return jsonify({
+            "ok": False,
+            "msg": "Invalid or expired code",
+            "codes": codes
+        }), 401
 
     # 🔥 xavfsizlik: barcha kodlarni o‘chiramiz
     r.delete("verify_codes")
