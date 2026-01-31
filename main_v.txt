@@ -1,3 +1,4 @@
+v 1.1.0 => main: venv gitignored for remote server
 v 1.0.9 => main: moammo v 1.0.3 da ekan && route f modif home => index
 v 1.0.8 => main: back to v 1.0.3
 v 1.0.7 => main: move to v 1.0.4
