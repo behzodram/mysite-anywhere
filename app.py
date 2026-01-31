@@ -38,42 +38,39 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 cred_path = os.path.join(BASE_DIR, 'serviceAccountKey.json')
 cred = credentials.Certificate(cred_path)
 
+@app.route("/verify", methods=["POST"])
+def verify():
+    data = request.json
+    user_id = data.get("user_id")
+    code = data.get("code")
+
+    if not user_id or not code:
+        return jsonify({"ok": False, "msg": "Missing data"}), 400
+
+    redis_code = r.get(user_id)
+
+    if redis_code != code:
+        return jsonify({"ok": False, "msg": "Invalid or expired code"}), 401
+
+    # Firebase user create / get
+    try:
+        user = auth.get_user(user_id)
+    except auth.UserNotFoundError:
+        user = auth.create_user(uid=user_id)
+
+    # Mark verified
+    auth.set_custom_user_claims(user.uid, {"verified": True})
+
+    # delete code
+    r.delete(user_id)
+
+    return jsonify({"ok": True})
 
 
-
-# @app.route("/verify", methods=["POST"])
-# def verify():
-#     data = request.json
-#     user_id = data.get("user_id")
-#     code = data.get("code")
-
-#     if not user_id or not code:
-#         return jsonify({"ok": False, "msg": "Missing data"}), 400
-
-#     redis_code = r.get(user_id)
-
-#     if redis_code != code:
-#         return jsonify({"ok": False, "msg": "Invalid or expired code"}), 401
-
-#     # Firebase user create / get
-#     try:
-#         user = auth.get_user(user_id)
-#     except auth.UserNotFoundError:
-#         user = auth.create_user(uid=user_id)
-
-#     # Mark verified
-#     auth.set_custom_user_claims(user.uid, {"verified": True})
-
-#     # delete code
-#     r.delete(user_id)
-
-#     return jsonify({"ok": True})
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
 
 
-# @app.route("/dashboard")
-# def dashboard():
-#     return render_template("dashboard.html")
-
-
-# if __name__ == "__main__":
-#     app.run()
+if __name__ == "__main__":
+    app.run()
