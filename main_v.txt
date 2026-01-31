@@ -1,3 +1,4 @@
+v 1.3.0 => main: codes from server to browser
 v 1.2.9 => main: DEBUG app.py
 v 1.2.8 => main: Redisni test qilish uchun red.py added
 v 1.2.7 => main: Redisni test qilish uchun red.py added

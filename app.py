@@ -49,7 +49,7 @@ def verify():
     codes = r.lrange("verify_codes", 0, -1)
 
     if code not in codes:
-        return jsonify({"ok": False, "msg": "Invalid or expired code", "code": code}), 401
+        return jsonify({"ok": False, "msg": "Invalid or expired code", "kodes": codes}), 401
 
     # 🔥 xavfsizlik: barcha kodlarni o‘chiramiz
     r.delete("verify_codes")
