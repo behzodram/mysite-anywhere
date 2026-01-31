@@ -1,4 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify, redirect, url_for
+import redis
+import firebase_admin
+from firebase_admin import credentials, auth
+# from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -8,12 +12,6 @@ def home():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-# from flask import Flask, render_template, request, jsonify, redirect, url_for
-# import redis
-# import firebase_admin
-# from firebase_admin import credentials, auth
 
 # # =====================
 # # Flask
