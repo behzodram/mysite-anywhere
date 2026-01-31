@@ -1,3 +1,4 @@
+v 1.2.1 => main: WEB sahifaga test matn yozildi
 v 1.2.0 => main: app.py da user_id ga aloqador lines vaqtincha comment berilgan
 v 1.1.9 => main: bot.py edit => bot generatsiya kodi terminalda aks etadi
 v 1.1.8 => main: index.html verify kod olish uchun yangilandi
