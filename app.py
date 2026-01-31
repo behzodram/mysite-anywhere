@@ -4,7 +4,20 @@ import firebase_admin
 from firebase_admin import credentials, auth
 # from flask import Flask, render_template
 
+# =====================
+# Flask
+# =====================
 app = Flask(__name__)
+# =====================
+# Upstash Redis
+# =====================
+# 🔹 Upstash Redis
+r = redis.Redis(
+    host="evident-panda-61482.upstash.io",
+    port=6379,
+    password="AfAqAAIncDE0YTA3ZjRlY2ZlMTY0YzM3YWE1ODY2MzRjZmRiMmFhM3AxNjE0ODI",
+    ssl=True
+)
 
 @app.route("/")
 def home():
@@ -12,22 +25,6 @@ def home():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# # =====================
-# # Flask
-# # =====================
-# app = Flask(__name__)
-
-# # =====================
-# # Upstash Redis
-# # =====================
-# # 🔹 Upstash Redis
-# r = redis.Redis(
-#     host="evident-panda-61482.upstash.io",
-#     port=6379,
-#     password="AfAqAAIncDE0YTA3ZjRlY2ZlMTY0YzM3YWE1ODY2MzRjZmRiMmFhM3AxNjE0ODI",
-#     ssl=True
-# )
 
 # # =====================
 # # Firebase Admin
