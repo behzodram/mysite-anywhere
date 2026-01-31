@@ -1,3 +1,4 @@
+v 1.0.6 => main: back to old f name for route => def index => def home
 v 1.0.5 => main: route func name home => index
 v 1.0.4 => main: Uncomment cred line && fb admin init line
 v 1.0.3 => main: app.py uncomment => redis config && app = Flask(__name__)

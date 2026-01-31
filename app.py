@@ -29,16 +29,11 @@ firebase_admin.initialize_app(cred)
 # Routes
 # =====================
 @app.route("/")
-def index():
+def home():
     return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# @app.route("/")
-# def home():
-#     return render_template("index.html")
-
 
 # @app.route("/verify", methods=["POST"])
 # def verify():
