@@ -18,11 +18,11 @@ async function verify() {
     const code = document.getElementById("code").value;
     const user_id = localStorage.getItem("tg_user_id");
 
-    if (!user_id) {
-        document.getElementById("status").innerText =
-            "Telegram botdan kiring!";
-        return;
-    }
+    // if (!user_id) {
+    //     document.getElementById("status").innerText =
+    //         "Telegram botdan kiring!";
+    //     return;
+    // }
 
     const res = await fetch("/verify", {
         method: "POST",
