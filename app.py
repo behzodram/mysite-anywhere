@@ -19,8 +19,11 @@ r = redis.Redis(
     ssl=True
 )
 
+# =====================
+# Routes
+# =====================
 @app.route("/")
-def home():
+def index():
     return render_template("index.html")
 
 if __name__ == "__main__":
@@ -32,13 +35,7 @@ if __name__ == "__main__":
 # cred = credentials.Certificate("serviceAccountKey.json")
 # firebase_admin.initialize_app(cred)
 
-# # =====================
-# # Routes
-# # =====================
 
-# @app.route("/")
-# def index():
-#     return render_template("index.html")
 
 
 # @app.route("/verify", methods=["POST"])
