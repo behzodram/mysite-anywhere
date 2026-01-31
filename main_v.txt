@@ -1,3 +1,4 @@
+v 1.2.5 => main: remove user id html
 v 1.2.4 => main: index htmldan user id check olindi
 v 1.2.3 => main: bot user id beryapti, app.py da userid lar uncomment
 v 1.2.2 => main: change reverse

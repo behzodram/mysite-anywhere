@@ -27,7 +27,7 @@ async function verify() {
     const res = await fetch("/verify", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ user_id, code })
+        body: JSON.stringify({ code })
     });
 
     const data = await res.json();
