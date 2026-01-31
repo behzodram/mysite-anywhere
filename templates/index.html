@@ -14,32 +14,15 @@
 <p id="status"></p>
 
 <script>
-// async function verify() {
-//     const code = document.getElementById("code").value;
-//     // const user_id = localStorage.getItem("tg_user_id");
-
-//     // if (!user_id) {
-//     //     document.getElementById("status").innerText =
-//     //         "Telegram botdan kiring!";
-//     //     return;
-//     // }
-
-//     const res = await fetch("/verify", {
-//         method: "POST",
-//         headers: {"Content-Type": "application/json"},
-//         body: JSON.stringify({ code })
-//     });
-
-//     const data = await res.json();
-
-//     if (data.ok) {
-//         window.location.href = "/dashboard";
-//     } else {
-//         document.getElementById("status").innerText = data.msg;
-//     }
-// }
     async function verify() {
         const code = document.getElementById("code").value;
+        // const user_id = localStorage.getItem("tg_user_id");
+
+        // if (!user_id) {
+        //     document.getElementById("status").innerText =
+        //         "Telegram botdan kiring!";
+        //     return;
+        // }
 
         const res = await fetch("/verify", {
             method: "POST",
@@ -55,7 +38,6 @@
             document.getElementById("status").innerText = data.msg;
         }
     }
-
 </script>
 
 </body>
