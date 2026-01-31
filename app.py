@@ -41,22 +41,22 @@ cred = credentials.Certificate(cred_path)
 @app.route("/verify", methods=["POST"])
 def verify():
     data = request.json
-    # user_id = data.get("user_id")
+    user_id = data.get("user_id")
     code = data.get("code")
 
-    # if not user_id or not code:
-    #     return jsonify({"ok": False, "msg": "Missing data"}), 400
+    if not user_id or not code:
+        return jsonify({"ok": False, "msg": "Missing data"}), 400
 
-    # redis_code = r.get(user_id)
+    redis_code = r.get(user_id)
 
     if redis_code != code:
         return jsonify({"ok": False, "msg": "Invalid or expired code"}), 401
 
     # Firebase user create / get
-    # try:
-    #     user = auth.get_user(user_id)
-    # except auth.UserNotFoundError:
-    #     user = auth.create_user(uid=user_id)
+    try:
+        user = auth.get_user(user_id)
+    except auth.UserNotFoundError:
+        user = auth.create_user(uid=user_id)
 
     # Mark verified
     auth.set_custom_user_claims(user.uid, {"verified": True})
