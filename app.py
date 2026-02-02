@@ -38,7 +38,7 @@ def verify():
     key = f"verify:{code}:{purpose}"
     # Bot DID BELOW
     # r.setex(key, VERIFY_TTL, code)
-    if code not r.get(key).decode("utf-8"):
+    if not r.exists(key):
         return jsonify({
             "ok": False,
             "msg": "Invalid or expired code",
@@ -46,7 +46,7 @@ def verify():
             # was just for debugging
         }), 401
     # code to‘gri
-
+    code_value = r.get(key).decode()
     # 🔥 xavfsizlik: barcha kodlarni o‘chiramiz
     r.delete("verify_codes")
 
