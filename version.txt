@@ -1,3 +1,4 @@
+v 1.4.7 => main: LMOD No Change
 v 1.4.6 => main: Tahrirsiz izoh: front qismi reusage code after server delete key from redis tuzaldi. orginalVerify func ga almashtirilgan
 v 1.4.5 => main: verify to orginalVerify script.js
 v 1.4.4 => main: r.delete('verify_codes') hali ham saqlangan serverda commit berusun
