@@ -2,10 +2,10 @@ import redis
 import random
 
 r = redis.Redis(
-    host="evident-panda-61482.upstash.io",
-    port=6379,
-    password="AfAqAAIncDE0YTA3ZjRlY2ZlMTY0YzM3YWE1ODY2MzRjZmRiMmFhM3AxNjE0ODI",
-    ssl=True
+    host=REDIS_HOST,
+    port=REDIS_PORT,
+    password=REDIS_PASSWORD,
+    ssl=REDIS_SSL
 )
 
 def start() -> str:
