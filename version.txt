@@ -1,3 +1,4 @@
+v 1.4.4 => main: r.delete('verify_codes') hali ham saqlangan serverda commit berusun
 v 1.4.3 => main:     r.delete(verify_codes) ekan => r.delete(key) tuzatildi
 v 1.4.2 => main:     r.delete(verify_codes)
 v 1.4.1 => main: script.js FULLY updated by deepseek
