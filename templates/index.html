@@ -1,44 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <title>Telegram Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Verification</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://telegram.org/favicon.ico">
 </head>
 <body>
+    <div class="container">
+        <div class="telegram-logo">
+            <i class="fab fa-telegram-plane"></i>
+        </div>
+        
+        <div class="login-card">
+            <div class="card-header">
+                <h1><i class="fab fa-telegram-plane"></i> Telegram Verification</h1>
+                <p class="subtitle">Enter the 4-digit code sent by Telegram bot</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="instruction">
+                    <div class="instruction-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <p>A 4-digit verification code has been sent to you via Telegram bot. Please enter it below to continue.</p>
+                </div>
+                
+                <div class="code-input-container">
+                    <div class="code-input-wrapper">
+                        <input type="text" id="code1" maxlength="1" class="code-input" data-index="0" autofocus>
+                        <input type="text" id="code2" maxlength="1" class="code-input" data-index="1">
+                        <input type="text" id="code3" maxlength="1" class="code-input" data-index="2">
+                        <input type="text" id="code4" maxlength="1" class="code-input" data-index="3">
+                    </div>
+                    <input type="hidden" id="full-code">
+                    
+                    <div class="timer-container">
+                        <i class="fas fa-clock"></i>
+                        <span id="timer">01:59</span>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn-verify" onclick="verify()">
+                        <i class="fas fa-shield-check"></i> Verify Code
+                    </button>
+                    <button class="btn-resend" onclick="resendCode()">
+                        <i class="fas fa-redo"></i> Resend Code
+                    </button>
+                </div>
+                
+                <div class="status-message" id="status"></div>
+                
+                <div class="telegram-info">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Make sure you're entering the code from the official Telegram bot. Never share this code with anyone.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <p><i class="fas fa-lock"></i> Secured by Telegram's encryption</p>
+                <p class="help-link"><a href="#"><i class="fas fa-question-circle"></i> Need help?</a></p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 Telegram Messenger. This is a demonstration page.</p>
+        </div>
+    </div>
 
-<h2>Telegram botdan kelgan 4 xonali kodni kiriting</h2>
-
-<input id="code" maxlength="4">
-<button onclick="verify()">Verify</button>
-
-<p id="status"></p>
-
-<script>
-    async function verify() {
-        const code = document.getElementById("code").value;
-        // const user_id = localStorage.getItem("tg_user_id");
-
-        // if (!user_id) {
-        //     document.getElementById("status").innerText =
-        //         "Telegram botdan kiring!";
-        //     return;
-        // }
-
-        const res = await fetch("/verify", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ code })
-        });
-
-        const data = await res.json();
-
-        if (data.ok) {
-            window.location.href = "/dashboard";
-        } else {
-            document.getElementById("status").innerText = data.msg;
-        }
-    }
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>

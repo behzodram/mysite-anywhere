@@ -1,0 +1,360 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #1e93c4 0%, #2aabee 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 480px;
+    width: 100%;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Telegram Logo */
+.telegram-logo {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.telegram-logo i {
+    font-size: 64px;
+    color: #fff;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Login Card */
+.login-card {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.card-header {
+    background: linear-gradient(to right, #2aabee, #229ed9);
+    color: white;
+    padding: 30px 30px 20px;
+    text-align: center;
+}
+
+.card-header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.card-header .subtitle {
+    font-size: 15px;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+/* Instruction Box */
+.instruction {
+    display: flex;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 30px;
+    border-left: 4px solid #2aabee;
+}
+
+.instruction-icon {
+    background-color: #e3f2fd;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.instruction-icon i {
+    color: #2aabee;
+    font-size: 18px;
+}
+
+.instruction p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Code Input */
+.code-input-container {
+    margin-bottom: 30px;
+}
+
+.code-input-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.code-input {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.code-input:focus {
+    outline: none;
+    border-color: #2aabee;
+    box-shadow: 0 0 0 3px rgba(42, 171, 238, 0.2);
+    background-color: white;
+}
+
+.code-input.filled {
+    border-color: #2aabee;
+    background-color: #e8f5fc;
+}
+
+.timer-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #666;
+    font-size: 15px;
+}
+
+.timer-container i {
+    color: #2aabee;
+}
+
+#timer {
+    font-weight: 600;
+    color: #2aabee;
+}
+
+/* Buttons */
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.btn-verify {
+    background: linear-gradient(to right, #2aabee, #229ed9);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(42, 171, 238, 0.3);
+}
+
+.btn-verify:hover {
+    background: linear-gradient(to right, #229ed9, #1e93c4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(42, 171, 238, 0.4);
+}
+
+.btn-verify:active {
+    transform: translateY(0);
+}
+
+.btn-resend {
+    background-color: #f8fafc;
+    color: #2aabee;
+    border: 2px solid #e1e8ed;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-resend:hover {
+    background-color: #e8f5fc;
+    border-color: #2aabee;
+}
+
+.btn-resend:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Status Message */
+.status-message {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+}
+
+.status-message.success {
+    background-color: #e7f7ef;
+    color: #0a8f4e;
+    border: 1px solid #a7e6c5;
+    display: block;
+}
+
+.status-message.error {
+    background-color: #fde8e8;
+    color: #c81e1e;
+    border: 1px solid #f8b4b4;
+    display: block;
+}
+
+/* Info Box */
+.telegram-info {
+    margin-top: 25px;
+}
+
+.info-box {
+    display: flex;
+    background-color: #f0f9ff;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #cce7ff;
+}
+
+.info-box i {
+    color: #2aabee;
+    font-size: 18px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.info-box p {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Footer */
+.card-footer {
+    background-color: #f8fafc;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e1e8ed;
+    font-size: 13px;
+    color: #777;
+}
+
+.card-footer p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-footer i {
+    color: #2aabee;
+}
+
+.help-link a {
+    color: #2aabee;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.help-link a:hover {
+    text-decoration: underline;
+}
+
+/* Page Footer */
+.footer {
+    text-align: center;
+    color: white;
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .card-header, .card-body {
+        padding: 25px 20px;
+    }
+    
+    .code-input {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+    
+    .card-footer {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
+}
