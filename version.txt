@@ -1,3 +1,4 @@
+v 1.3.5 => main: yangi key = key = fverify:{code}:{purpose} va config.py da h_key(code)
 v 1.3.4 => main: from config import * qop ketibdi
 v 1.3.3 => main: index. scriptni verify eski kodi qaytdi hali ham user_id in comment
 v 1.3.2 => main: dashboard renewed for test
