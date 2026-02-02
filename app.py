@@ -48,7 +48,7 @@ def verify():
     # code to‘gri
     code_value = r.get(key).decode()
     # 🔥 xavfsizlik: barcha kodlarni o‘chiramiz
-    r.delete("verify_codes")
+    r.delete(key)
 
     return jsonify({"ok": True})
 
