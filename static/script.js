@@ -411,7 +411,7 @@ window.addEventListener('load', function() {
             const isCodeInput = activeElement.classList.contains('code-input');
             
             if (!isCodeInput) {
-                verify();
+                originalVerify();
             }
         }
     });
