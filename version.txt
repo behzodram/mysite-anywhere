@@ -1,3 +1,4 @@
+v 1.3.9 => main: flask style.css Read test
 v 1.3.8 => main: script.js va style.css static papkaga ko'chirildi
 v 1.3.7 => main: Fronten da dizayn yangilandi va script.js && style.css qo'shildi
 v 1.3.6 => main: r.exist(key) ishlatilmabdi-yu tuzaldi deb o'yliyman
