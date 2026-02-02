@@ -1,3 +1,4 @@
+v 1.4.3 => main:     r.delete(verify_codes) ekan => r.delete(key) tuzatildi
 v 1.4.2 => main:     r.delete(verify_codes)
 v 1.4.1 => main: script.js FULLY updated by deepseek
 v 1.4.0 => main: flask style.css Read test Success, add this for script.js
