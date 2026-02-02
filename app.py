@@ -1,8 +1,7 @@
-import os
-import redis
-import firebase_admin
+import os, redis, firebase_admin
 from firebase_admin import credentials, auth
 from flask import Flask, render_template, request, jsonify, redirect, url_for
+from config import *
 
 # from flask import Flask, render_template
 

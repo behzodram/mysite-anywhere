@@ -1,5 +1,5 @@
-import redis
-import random
+import redis, random
+from config import *
 
 r = redis.Redis(
     host=REDIS_HOST,
