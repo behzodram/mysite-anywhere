@@ -1,101 +1,114 @@
-// Initialize code input handling and timer
+// Telegram kod tasdiqlash skripti
 document.addEventListener('DOMContentLoaded', function() {
-    // Focus the first input on load
-    document.getElementById('code1').focus();
-    
-    // Set up code input handling
+    // Kod kiritish maydonlarini boshqarish
     const inputs = document.querySelectorAll('.code-input');
     
-    inputs.forEach(input => {
-        input.addEventListener('input', function(e) {
-            // Only allow digits
-            this.value = this.value.replace(/\D/g, '');
-            
-            // Move to next input if a digit is entered
-            if (this.value.length === 1) {
-                this.classList.add('filled');
+    // Birinchi maydonga fokus
+    if (inputs.length > 0) {
+        document.getElementById('code1').focus();
+        
+        // Har bir kod kiritish maydoni uchun hodisalar
+        inputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                // Faqat raqamlarni qabul qilish
+                this.value = this.value.replace(/\D/g, '');
                 
-                const nextIndex = parseInt(this.dataset.index) + 1;
-                if (nextIndex < inputs.length) {
-                    inputs[nextIndex].focus();
+                // Raqam kiritilganda keyingi maydonga o'tish
+                if (this.value.length === 1) {
+                    this.classList.add('filled');
+                    
+                    const nextIndex = parseInt(this.dataset.index) + 1;
+                    if (nextIndex < inputs.length) {
+                        inputs[nextIndex].focus();
+                    }
                 }
-            }
+                
+                // To'liq kodni yangilash
+                updateFullCode();
+            });
             
-            // Update the hidden full code field
-            updateFullCode();
+            input.addEventListener('keydown', function(e) {
+                // Backspace ni boshqarish
+                if (e.key === 'Backspace' && this.value.length === 0) {
+                    const prevIndex = parseInt(this.dataset.index) - 1;
+                    if (prevIndex >= 0) {
+                        inputs[prevIndex].focus();
+                        inputs[prevIndex].classList.remove('filled');
+                    }
+                }
+                
+                // O'q tugmalarini boshqarish
+                if (e.key === 'ArrowLeft') {
+                    const prevIndex = parseInt(this.dataset.index) - 1;
+                    if (prevIndex >= 0) {
+                        inputs[prevIndex].focus();
+                    }
+                }
+                
+                if (e.key === 'ArrowRight') {
+                    const nextIndex = parseInt(this.dataset.index) + 1;
+                    if (nextIndex < inputs.length) {
+                        inputs[nextIndex].focus();
+                    }
+                }
+                
+                // Enter tugmasi bilan tasdiqlash
+                if (e.key === 'Enter') {
+                    verify();
+                }
+                
+                // To'liq kodni yangilash
+                updateFullCode();
+            });
+            
+            // Past qilish (paste) funksiyasi
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData('text').replace(/\D/g, '');
+                
+                // Past qilingan ma'lumot bilan maydonlarni to'ldirish
+                for (let i = 0; i < Math.min(pasteData.length, inputs.length); i++) {
+                    inputs[i].value = pasteData[i];
+                    inputs[i].classList.add('filled');
+                }
+                
+                // Keyingi bo'sh maydonga fokus
+                const nextEmptyIndex = Array.from(inputs).findIndex(input => input.value === '');
+                if (nextEmptyIndex !== -1) {
+                    inputs[nextEmptyIndex].focus();
+                } else {
+                    inputs[inputs.length - 1].focus();
+                }
+                
+                updateFullCode();
+            });
         });
-        
-        input.addEventListener('keydown', function(e) {
-            // Handle backspace
-            if (e.key === 'Backspace' && this.value.length === 0) {
-                const prevIndex = parseInt(this.dataset.index) - 1;
-                if (prevIndex >= 0) {
-                    inputs[prevIndex].focus();
-                    inputs[prevIndex].classList.remove('filled');
-                }
-            }
-            
-            // Handle arrow keys
-            if (e.key === 'ArrowLeft') {
-                const prevIndex = parseInt(this.dataset.index) - 1;
-                if (prevIndex >= 0) {
-                    inputs[prevIndex].focus();
-                }
-            }
-            
-            if (e.key === 'ArrowRight') {
-                const nextIndex = parseInt(this.dataset.index) + 1;
-                if (nextIndex < inputs.length) {
-                    inputs[nextIndex].focus();
-                }
-            }
-            
-            // Update the hidden full code field
-            updateFullCode();
-        });
-        
-        input.addEventListener('paste', function(e) {
-            e.preventDefault();
-            const pasteData = e.clipboardData.getData('text').replace(/\D/g, '');
-            
-            // Fill inputs with pasted data
-            for (let i = 0; i < Math.min(pasteData.length, inputs.length); i++) {
-                inputs[i].value = pasteData[i];
-                inputs[i].classList.add('filled');
-            }
-            
-            // Focus the next empty input or last one
-            const nextEmptyIndex = Array.from(inputs).findIndex(input => input.value === '');
-            if (nextEmptyIndex !== -1) {
-                inputs[nextEmptyIndex].focus();
-            } else {
-                inputs[inputs.length - 1].focus();
-            }
-            
-            updateFullCode();
-        });
-    });
+    }
     
-    // Start the countdown timer
+    // Taymerni boshlash
     startTimer();
 });
 
-// Update the hidden full code field
+// To'liq kodni yangilash funksiyasi
 function updateFullCode() {
     const inputs = document.querySelectorAll('.code-input');
     let fullCode = '';
     inputs.forEach(input => {
         fullCode += input.value;
     });
+    // Yashirin maydonga saqlash
     document.getElementById('full-code').value = fullCode;
+    return fullCode;
 }
 
-// Timer functionality
+// Taymer funksiyasi
 function startTimer() {
-    let timeLeft = 119; // 1 minute 59 seconds
+    let timeLeft = 119; // 1 daqiqa 59 soniya
     
     const timerElement = document.getElementById('timer');
     const resendButton = document.querySelector('.btn-resend');
+    
+    if (!timerElement || !resendButton) return;
     
     const timerInterval = setInterval(() => {
         const minutes = Math.floor(timeLeft / 60);
@@ -107,72 +120,113 @@ function startTimer() {
             clearInterval(timerInterval);
             timerElement.textContent = "00:00";
             resendButton.disabled = false;
-            resendButton.innerHTML = '<i class="fas fa-redo"></i> Resend Code';
+            resendButton.innerHTML = '<i class="fas fa-redo"></i> Kodni qayta yuborish';
         } else {
             timeLeft--;
         }
     }, 1000);
 }
 
-// Resend code function
+// Kodni qayta yuborish funksiyasi
 function resendCode() {
     const resendButton = document.querySelector('.btn-resend');
     const statusElement = document.getElementById('status');
     
-    // Disable resend button temporarily
-    resendButton.disabled = true;
-    resendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    if (!resendButton || !statusElement) return;
     
-    // Show status message
-    statusElement.textContent = "Sending new code...";
+    // Qayta yuborish tugmasini vaqtincha o'chirish
+    resendButton.disabled = true;
+    resendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yuborilmoqda...';
+    
+    // Holat xabarini ko'rsatish
+    statusElement.textContent = "Yangi kod yuborilmoqda...";
     statusElement.className = "status-message";
     
-    // Simulate API call delay
+    // API so'rovini simulyatsiya qilish
     setTimeout(() => {
-        // Clear input fields
-        const inputs = document.querySelectorAll('.code-input');
-        inputs.forEach(input => {
-            input.value = '';
-            input.classList.remove('filled');
+        // API so'rovini amalga oshirish
+        fetch('/resend-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                // Kirish maydonlarini tozalash
+                const inputs = document.querySelectorAll('.code-input');
+                inputs.forEach(input => {
+                    input.value = '';
+                    input.classList.remove('filled');
+                });
+                
+                // Birinchi maydonga fokus
+                document.getElementById('code1').focus();
+                
+                // Muvaffaqiyat xabarini ko'rsatish
+                statusElement.textContent = data.msg || "Yangi 4 xonali kod Telegram hisobingizga yuborildi.";
+                statusElement.classList.add('success');
+                
+                // Taymerni qayta boshlash
+                startTimer();
+                
+                // Tugma holatini yangilash
+                setTimeout(() => {
+                    resendButton.innerHTML = '<i class="fas fa-redo"></i> Kodni qayta yuborish';
+                    resendButton.disabled = true;
+                }, 100);
+                
+                // Holat xabarini 5 soniyadan keyin yashirish
+                setTimeout(() => {
+                    statusElement.className = "status-message";
+                }, 5000);
+            } else {
+                // Xato xabarini ko'rsatish
+                statusElement.textContent = data.msg || "Kod yuborishda xatolik yuz berdi.";
+                statusElement.classList.add('error');
+                
+                // Tugma holatini tiklash
+                resendButton.innerHTML = '<i class="fas fa-redo"></i> Kodni qayta yuborish';
+                resendButton.disabled = false;
+                
+                // Xato xabarini 5 soniyadan keyin yashirish
+                setTimeout(() => {
+                    statusElement.className = "status-message";
+                }, 5000);
+            }
+        })
+        .catch(error => {
+            console.error('Xatolik:', error);
+            statusElement.textContent = "Server bilan aloqa qilishda xatolik yuz berdi.";
+            statusElement.classList.add('error');
+            
+            // Tugma holatini tiklash
+            resendButton.innerHTML = '<i class="fas fa-redo"></i> Kodni qayta yuborish';
+            resendButton.disabled = false;
+            
+            // Xato xabarini 5 soniyadan keyin yashirish
+            setTimeout(() => {
+                statusElement.className = "status-message";
+            }, 5000);
         });
-        document.getElementById('code1').focus();
-        
-        // Show success message
-        statusElement.textContent = "A new 4-digit code has been sent to your Telegram account.";
-        statusElement.classList.add('success');
-        
-        // Restart timer
-        startTimer();
-        
-        // Update button state after timer starts
-        setTimeout(() => {
-            resendButton.innerHTML = '<i class="fas fa-redo"></i> Resend Code';
-            resendButton.disabled = true;
-        }, 100);
-        
-        // Hide status after 5 seconds
-        setTimeout(() => {
-            statusElement.className = "status-message";
-        }, 5000);
-    }, 1500);
+    }, 1000);
 }
 
-// Verification function
+// Asosiy tasdiqlash funksiyasi (sizning bergan kodga mos)
 async function verify() {
-    const inputs = document.querySelectorAll('.code-input');
-    let code = '';
-    inputs.forEach(input => {
-        code += input.value;
-    });
-    
+    // To'liq kodni olish
+    const code = updateFullCode();
     const statusElement = document.getElementById('status');
     
-    // Basic validation
+    // Asosiy validatsiya
     if (code.length !== 4) {
-        statusElement.textContent = "Please enter a complete 4-digit code.";
+        statusElement.textContent = "Iltimos, to'liq 4 xonali kodni kiriting.";
         statusElement.classList.add('error');
         
-        // Add shake animation to inputs
+        // Kirish maydonlarini chayqatish animatsiyasi
+        const inputs = document.querySelectorAll('.code-input');
         inputs.forEach(input => {
             input.classList.add('shake');
             setTimeout(() => {
@@ -183,65 +237,198 @@ async function verify() {
         return;
     }
     
-    // Show verifying status
-    statusElement.textContent = "Verifying code...";
+    // Tasdiqlash jarayonini ko'rsatish
+    statusElement.textContent = "Kod tekshirilmoqda...";
     statusElement.className = "status-message";
     
-    // Simulate API call
-    setTimeout(async () => {
-        // In a real app, you would make an actual fetch call here
-        // For demo purposes, we'll simulate a response
-        const res = await mockVerifyAPI(code);
+    // Tasdiqlash tugmasini o'chirish
+    const verifyButton = document.querySelector('.btn-verify');
+    if (verifyButton) {
+        const originalText = verifyButton.innerHTML;
+        verifyButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tekshirilmoqda...';
+        verifyButton.disabled = true;
         
-        if (res.ok) {
-            // Show success message
-            statusElement.textContent = "Verification successful! Redirecting...";
-            statusElement.classList.add('success');
-            
-            // Simulate redirect to dashboard
-            setTimeout(() => {
-                window.location.href = "/dashboard";
-            }, 1500);
-        } else {
-            // Show error message
-            statusElement.textContent = res.msg;
+        // API so'rovini amalga oshirish
+        try {
+            const res = await fetch("/verify", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ code })
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+                // Muvaffaqiyat xabarini ko'rsatish
+                statusElement.textContent = data.msg || "Tasdiqlash muvaffaqiyatli! Yo'naltirilmoqda...";
+                statusElement.classList.add('success');
+                
+                // Dashboard sahifasiga yo'naltirish
+                setTimeout(() => {
+                    window.location.href = "/dashboard";
+                }, 1500);
+            } else {
+                // Xato xabarini ko'rsatish
+                statusElement.textContent = data.msg || "Noto'g'ri tasdiqlash kodi.";
+                statusElement.classList.add('error');
+                
+                // Kirish maydonlarini tozalash
+                const inputs = document.querySelectorAll('.code-input');
+                inputs.forEach(input => {
+                    input.value = '';
+                    input.classList.remove('filled');
+                });
+                
+                // Birinchi maydonga fokus
+                document.getElementById('code1').focus();
+                
+                // Tugma holatini tiklash
+                verifyButton.innerHTML = originalText;
+                verifyButton.disabled = false;
+                
+                // Xato xabarini 5 soniyadan keyin yashirish
+                setTimeout(() => {
+                    statusElement.className = "status-message";
+                }, 5000);
+            }
+        } catch (error) {
+            console.error('Xatolik:', error);
+            statusElement.textContent = "Server bilan aloqa qilishda xatolik yuz berdi.";
             statusElement.classList.add('error');
             
-            // Clear input fields on error
-            inputs.forEach(input => {
-                input.value = '';
-                input.classList.remove('filled');
-            });
-            document.getElementById('code1').focus();
+            // Tugma holatini tiklash
+            verifyButton.innerHTML = originalText;
+            verifyButton.disabled = false;
             
-            // Hide error after 5 seconds
+            // Xato xabarini 5 soniyadan keyin yashirish
             setTimeout(() => {
                 statusElement.className = "status-message";
             }, 5000);
         }
-    }, 1500);
+    } else {
+        // Agar tasdiqlash tugmasi topilmasa, oddiy API so'rovini amalga oshirish
+        try {
+            const res = await fetch("/verify", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ code })
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+                // Muvaffaqiyat xabarini ko'rsatish
+                statusElement.textContent = data.msg || "Tasdiqlash muvaffaqiyatli! Yo'naltirilmoqda...";
+                statusElement.classList.add('success');
+                
+                // Dashboard sahifasiga yo'naltirish
+                setTimeout(() => {
+                    window.location.href = "/dashboard";
+                }, 1500);
+            } else {
+                // Xato xabarini ko'rsatish
+                statusElement.textContent = data.msg;
+                statusElement.classList.add('error');
+                
+                // Kirish maydonlarini tozalash
+                const inputs = document.querySelectorAll('.code-input');
+                inputs.forEach(input => {
+                    input.value = '';
+                    input.classList.remove('filled');
+                });
+                
+                // Birinchi maydonga fokus
+                document.getElementById('code1').focus();
+                
+                // Xato xabarini 5 soniyadan keyin yashirish
+                setTimeout(() => {
+                    statusElement.className = "status-message";
+                }, 5000);
+            }
+        } catch (error) {
+            console.error('Xatolik:', error);
+            statusElement.textContent = "Server bilan aloqa qilishda xatolik yuz berdi.";
+            statusElement.classList.add('error');
+            
+            // Xato xabarini 5 soniyadan keyin yashirish
+            setTimeout(() => {
+                statusElement.className = "status-message";
+            }, 5000);
+        }
+    }
 }
 
-// Mock API function for demo
+// Demo maqsadida: qo'shimcha funksiyalar
+// Sizning asl funksiyangizni saqlab qolish (agar kerak bo'lsa)
+async function originalVerify() {
+    const code = document.getElementById("code").value;
+    const res = await fetch("/verify", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ code })
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+        window.location.href = "/dashboard";
+    } else {
+        document.getElementById("status").innerText = data.msg;
+    }
+}
+
+// Demo maqsadida: tekshirish API simulyatsiyasi
 async function mockVerifyAPI(code) {
-    // Simulate network delay
+    // Tarmoq kechikishini simulyatsiya qilish
     await new Promise(resolve => setTimeout(resolve, 800));
     
-    // For demo purposes, accept any 4-digit code except "0000"
+    // Demo maqsadida, "0000" dan boshqa har qanday 4 xonali kodni qabul qilish
     if (code === "0000") {
         return {
             ok: false,
-            msg: "Invalid verification code. Please try again."
+            msg: "Noto'g'ri tasdiqlash kodi. Iltimos, qayta urinib ko'ring."
         };
     } else if (code === "1234") {
         return {
             ok: false,
-            msg: "This code has expired. Please request a new one."
+            msg: "Bu kodning amal qilish muddati tugagan. Iltimos, yangi kod so'rang."
         };
     } else {
         return {
             ok: true,
-            msg: "Verification successful!"
+            msg: "Tasdiqlash muvaffaqiyatli!"
         };
     }
 }
+
+// Sahifa elementlariga qo'shimcha hodisalar qo'shish
+window.addEventListener('load', function() {
+    // Enter tugmasi bilan sahifada har qanday joyda tasdiqlash
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            // Faqat kod kiritish maydonlarida emas, balki sahifaning istalgan joyida
+            const activeElement = document.activeElement;
+            const isCodeInput = activeElement.classList.contains('code-input');
+            
+            if (!isCodeInput) {
+                verify();
+            }
+        }
+    });
+    
+    // Automatik kod to'ldirish (demo maqsadida)
+    // Haqiqiy loyihada bu qismni o'chirib qo'yishingiz mumkin
+    const demoAutoFill = sessionStorage.getItem('demoAutoFill');
+    if (!demoAutoFill && window.location.href.includes('localhost')) {
+        setTimeout(() => {
+            const inputs = document.querySelectorAll('.code-input');
+            const demoCode = "5689"; // Demo kod
+            for (let i = 0; i < Math.min(demoCode.length, inputs.length); i++) {
+                inputs[i].value = demoCode[i];
+                inputs[i].classList.add('filled');
+            }
+            updateFullCode();
+            sessionStorage.setItem('demoAutoFill', 'true');
+        }, 1000);
+    }
+});
