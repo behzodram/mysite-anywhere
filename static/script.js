@@ -1,43 +1,36 @@
-// Telegram kod tasdiqlash skripti
 document.addEventListener('DOMContentLoaded', function() {
-    // Kod kiritish maydonlarini boshqarish
+    // Code input management
     const inputs = document.querySelectorAll('.code-input');
+    const sessionId = document.getElementById('session-id').value;
     
-    // Birinchi maydonga fokus
+    // Auto-focus first input
     if (inputs.length > 0) {
-        document.getElementById('code1').focus();
+        inputs[0].focus();
         
-        // Har bir kod kiritish maydoni uchun hodisalar
         inputs.forEach(input => {
             input.addEventListener('input', function(e) {
-                // Faqat raqamlarni qabul qilish
+                // Only allow numbers
                 this.value = this.value.replace(/\D/g, '');
                 
-                // Raqam kiritilganda keyingi maydonga o'tish
+                // Move to next input
                 if (this.value.length === 1) {
-                    this.classList.add('filled');
-                    
                     const nextIndex = parseInt(this.dataset.index) + 1;
                     if (nextIndex < inputs.length) {
                         inputs[nextIndex].focus();
                     }
                 }
-                
-                // To'liq kodni yangilash
-                updateFullCode();
             });
             
             input.addEventListener('keydown', function(e) {
-                // Backspace ni boshqarish
+                // Handle backspace
                 if (e.key === 'Backspace' && this.value.length === 0) {
                     const prevIndex = parseInt(this.dataset.index) - 1;
                     if (prevIndex >= 0) {
                         inputs[prevIndex].focus();
-                        inputs[prevIndex].classList.remove('filled');
                     }
                 }
                 
-                // O'q tugmalarini boshqarish
+                // Handle arrow keys
                 if (e.key === 'ArrowLeft') {
                     const prevIndex = parseInt(this.dataset.index) - 1;
                     if (prevIndex >= 0) {
@@ -52,58 +45,50 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
-                // Enter tugmasi bilan tasdiqlash
+                // Enter to verify
                 if (e.key === 'Enter') {
                     verify();
                 }
-                
-                // To'liq kodni yangilash
-                updateFullCode();
             });
             
-            // Past qilish (paste) funksiyasi
+            // Handle paste
             input.addEventListener('paste', function(e) {
                 e.preventDefault();
                 const pasteData = e.clipboardData.getData('text').replace(/\D/g, '');
                 
-                // Past qilingan ma'lumot bilan maydonlarni to'ldirish
+                // Fill inputs with pasted data
                 for (let i = 0; i < Math.min(pasteData.length, inputs.length); i++) {
                     inputs[i].value = pasteData[i];
-                    inputs[i].classList.add('filled');
                 }
                 
-                // Keyingi bo'sh maydonga fokus
+                // Focus next empty input
                 const nextEmptyIndex = Array.from(inputs).findIndex(input => input.value === '');
                 if (nextEmptyIndex !== -1) {
                     inputs[nextEmptyIndex].focus();
                 } else {
                     inputs[inputs.length - 1].focus();
                 }
-                
-                updateFullCode();
             });
         });
     }
     
-    // Taymerni boshlash
+    // Start timer
     startTimer();
 });
 
-// To'liq kodni yangilash funksiyasi
-function updateFullCode() {
+// Get full code
+function getFullCode() {
     const inputs = document.querySelectorAll('.code-input');
     let fullCode = '';
     inputs.forEach(input => {
         fullCode += input.value;
     });
-    // Yashirin maydonga saqlash
-    document.getElementById('full-code').value = fullCode;
     return fullCode;
 }
 
-// Taymer funksiyasi
+// Timer function
 function startTimer() {
-    let timeLeft = 119; // 1 daqiqa 59 soniya
+    let timeLeft = 300; // 5 minutes
     
     const timerElement = document.getElementById('timer');
     const resendButton = document.querySelector('.btn-resend');
@@ -120,112 +105,46 @@ function startTimer() {
             clearInterval(timerInterval);
             timerElement.textContent = "00:00";
             resendButton.disabled = false;
-            resendButton.innerHTML = '<i class="fas fa-redo"></i> Kodni qayta yuborish';
+            resendButton.innerHTML = '<i class="fas fa-redo"></i> Get New Code';
         } else {
             timeLeft--;
         }
     }, 1000);
 }
 
-// Kodni qayta yuborish funksiyasi
+// Resend code
 function resendCode() {
     const resendButton = document.querySelector('.btn-resend');
     const statusElement = document.getElementById('status');
     
     if (!resendButton || !statusElement) return;
     
-    // Qayta yuborish tugmasini vaqtincha o'chirish
+    // Disable button temporarily
     resendButton.disabled = true;
-    resendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yuborilmoqda...';
+    resendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     
-    // Holat xabarini ko'rsatish
-    statusElement.textContent = "Yangi kod yuborilmoqda...";
+    // Show status
+    statusElement.textContent = "Please get new code from the bot";
     statusElement.className = "status-message";
     
-    // API so'rovini simulyatsiya qilish
+    // Reload page to get new session
     setTimeout(() => {
-        // API so'rovini amalga oshirish
-        fetch('/resend-code', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({})
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.ok) {
-                // Kirish maydonlarini tozalash
-                const inputs = document.querySelectorAll('.code-input');
-                inputs.forEach(input => {
-                    input.value = '';
-                    input.classList.remove('filled');
-                });
-                
-                // Birinchi maydonga fokus
-                document.getElementById('code1').focus();
-                
-                // Muvaffaqiyat xabarini ko'rsatish
-                statusElement.textContent = data.msg || "Yangi 4 xonali kod Telegram hisobingizga yuborildi.";
-                statusElement.classList.add('success');
-                
-                // Taymerni qayta boshlash
-                startTimer();
-                
-                // Tugma holatini yangilash
-                setTimeout(() => {
-                    resendButton.innerHTML = '<i class="fas fa-redo"></i> Kodni qayta yuborish';
-                    resendButton.disabled = true;
-                }, 100);
-                
-                // Holat xabarini 5 soniyadan keyin yashirish
-                setTimeout(() => {
-                    statusElement.className = "status-message";
-                }, 5000);
-            } else {
-                // Xato xabarini ko'rsatish
-                statusElement.textContent = data.msg || "Kod yuborishda xatolik yuz berdi.";
-                statusElement.classList.add('error');
-                
-                // Tugma holatini tiklash
-                resendButton.innerHTML = '<i class="fas fa-redo"></i> Kodni qayta yuborish';
-                resendButton.disabled = false;
-                
-                // Xato xabarini 5 soniyadan keyin yashirish
-                setTimeout(() => {
-                    statusElement.className = "status-message";
-                }, 5000);
-            }
-        })
-        .catch(error => {
-            console.error('Xatolik:', error);
-            statusElement.textContent = "Server bilan aloqa qilishda xatolik yuz berdi.";
-            statusElement.classList.add('error');
-            
-            // Tugma holatini tiklash
-            resendButton.innerHTML = '<i class="fas fa-redo"></i> Kodni qayta yuborish';
-            resendButton.disabled = false;
-            
-            // Xato xabarini 5 soniyadan keyin yashirish
-            setTimeout(() => {
-                statusElement.className = "status-message";
-            }, 5000);
-        });
-    }, 1000);
+        window.location.reload();
+    }, 1500);
 }
 
-// Asosiy tasdiqlash funksiyasi (sizning bergan kodga mos)
+// Verify code
 async function verify() {
-    // To'liq kodni olish
-    const code = updateFullCode();
+    const code = getFullCode();
+    const sessionId = document.getElementById('session-id').value;
     const statusElement = document.getElementById('status');
     
-    // Asosiy validatsiya
+    // Validation
     if (code.length !== 4) {
-        statusElement.textContent = "Iltimos, to'liq 4 xonali kodni kiriting.";
-        statusElement.classList.add('error');
+        statusElement.textContent = "Please enter 4-digit code";
+        statusElement.className = "status-message error";
         
-        // Kirish maydonlarini chayqatish animatsiyasi
+        // Shake animation
         const inputs = document.querySelectorAll('.code-input');
         inputs.forEach(input => {
             input.classList.add('shake');
@@ -237,198 +156,54 @@ async function verify() {
         return;
     }
     
-    // Tasdiqlash jarayonini ko'rsatish
-    statusElement.textContent = "Kod tekshirilmoqda...";
+    // Show verifying status
+    statusElement.textContent = "Verifying code...";
     statusElement.className = "status-message";
     
-    // Tasdiqlash tugmasini o'chirish
+    // Disable verify button
     const verifyButton = document.querySelector('.btn-verify');
-    if (verifyButton) {
-        const originalText = verifyButton.innerHTML;
-        verifyButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tekshirilmoqda...';
-        verifyButton.disabled = true;
+    const originalText = verifyButton.innerHTML;
+    verifyButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    verifyButton.disabled = true;
+    
+    try {
+        const response = await fetch("/verify", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ code: code, session_id: sessionId })
+        });
         
-        // API so'rovini amalga oshirish
-        try {
-            const res = await fetch("/verify", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ code })
-            });
-
-            const data = await res.json();
-
-            if (data.ok) {
-                // Muvaffaqiyat xabarini ko'rsatish
-                statusElement.textContent = data.msg || "Tasdiqlash muvaffaqiyatli! Yo'naltirilmoqda...";
-                statusElement.classList.add('success');
-                
-                // Dashboard sahifasiga yo'naltirish
-                setTimeout(() => {
-                    window.location.href = "/dashboard";
-                }, 1500);
-            } else {
-                // Xato xabarini ko'rsatish
-                statusElement.textContent = data.msg || "Noto'g'ri tasdiqlash kodi.";
-                statusElement.classList.add('error');
-                
-                // Kirish maydonlarini tozalash
-                const inputs = document.querySelectorAll('.code-input');
-                inputs.forEach(input => {
-                    input.value = '';
-                    input.classList.remove('filled');
-                });
-                
-                // Birinchi maydonga fokus
-                document.getElementById('code1').focus();
-                
-                // Tugma holatini tiklash
-                verifyButton.innerHTML = originalText;
-                verifyButton.disabled = false;
-                
-                // Xato xabarini 5 soniyadan keyin yashirish
-                setTimeout(() => {
-                    statusElement.className = "status-message";
-                }, 5000);
-            }
-        } catch (error) {
-            console.error('Xatolik:', error);
-            statusElement.textContent = "Server bilan aloqa qilishda xatolik yuz berdi.";
-            statusElement.classList.add('error');
+        const data = await response.json();
+        
+        if (data.ok) {
+            statusElement.textContent = "Verification successful! Redirecting...";
+            statusElement.className = "status-message success";
             
-            // Tugma holatini tiklash
+            // Redirect to dashboard
+            setTimeout(() => {
+                window.location.href = "/dashboard";
+            }, 1500);
+        } else {
+            statusElement.textContent = data.msg || "Invalid code";
+            statusElement.className = "status-message error";
+            
+            // Clear inputs
+            const inputs = document.querySelectorAll('.code-input');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+            inputs[0].focus();
+            
+            // Restore button
             verifyButton.innerHTML = originalText;
             verifyButton.disabled = false;
-            
-            // Xato xabarini 5 soniyadan keyin yashirish
-            setTimeout(() => {
-                statusElement.className = "status-message";
-            }, 5000);
         }
-    } else {
-        // Agar tasdiqlash tugmasi topilmasa, oddiy API so'rovini amalga oshirish
-        try {
-            const res = await fetch("/verify", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ code })
-            });
-
-            const data = await res.json();
-
-            if (data.ok) {
-                // Muvaffaqiyat xabarini ko'rsatish
-                statusElement.textContent = data.msg || "Tasdiqlash muvaffaqiyatli! Yo'naltirilmoqda...";
-                statusElement.classList.add('success');
-                
-                // Dashboard sahifasiga yo'naltirish
-                setTimeout(() => {
-                    window.location.href = "/dashboard";
-                }, 1500);
-            } else {
-                // Xato xabarini ko'rsatish
-                statusElement.textContent = data.msg;
-                statusElement.classList.add('error');
-                
-                // Kirish maydonlarini tozalash
-                const inputs = document.querySelectorAll('.code-input');
-                inputs.forEach(input => {
-                    input.value = '';
-                    input.classList.remove('filled');
-                });
-                
-                // Birinchi maydonga fokus
-                document.getElementById('code1').focus();
-                
-                // Xato xabarini 5 soniyadan keyin yashirish
-                setTimeout(() => {
-                    statusElement.className = "status-message";
-                }, 5000);
-            }
-        } catch (error) {
-            console.error('Xatolik:', error);
-            statusElement.textContent = "Server bilan aloqa qilishda xatolik yuz berdi.";
-            statusElement.classList.add('error');
-            
-            // Xato xabarini 5 soniyadan keyin yashirish
-            setTimeout(() => {
-                statusElement.className = "status-message";
-            }, 5000);
-        }
+    } catch (error) {
+        console.error("Error:", error);
+        statusElement.textContent = "Connection error";
+        statusElement.className = "status-message error";
+        
+        verifyButton.innerHTML = originalText;
+        verifyButton.disabled = false;
     }
 }
-
-// Demo maqsadida: qo'shimcha funksiyalar
-// Sizning asl funksiyangizni saqlab qolish (agar kerak bo'lsa)
-async function originalVerify() {
-    const code = document.getElementById("code").value;
-    const res = await fetch("/verify", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ code })
-    });
-
-    const data = await res.json();
-
-    if (data.ok) {
-        window.location.href = "/dashboard";
-    } else {
-        document.getElementById("status").innerText = data.msg;
-    }
-}
-
-// Demo maqsadida: tekshirish API simulyatsiyasi
-async function mockVerifyAPI(code) {
-    // Tarmoq kechikishini simulyatsiya qilish
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Demo maqsadida, "0000" dan boshqa har qanday 4 xonali kodni qabul qilish
-    if (code === "0000") {
-        return {
-            ok: false,
-            msg: "Noto'g'ri tasdiqlash kodi. Iltimos, qayta urinib ko'ring."
-        };
-    } else if (code === "1234") {
-        return {
-            ok: false,
-            msg: "Bu kodning amal qilish muddati tugagan. Iltimos, yangi kod so'rang."
-        };
-    } else {
-        return {
-            ok: true,
-            msg: "Tasdiqlash muvaffaqiyatli!"
-        };
-    }
-}
-
-// Sahifa elementlariga qo'shimcha hodisalar qo'shish
-window.addEventListener('load', function() {
-    // Enter tugmasi bilan sahifada har qanday joyda tasdiqlash
-    document.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            // Faqat kod kiritish maydonlarida emas, balki sahifaning istalgan joyida
-            const activeElement = document.activeElement;
-            const isCodeInput = activeElement.classList.contains('code-input');
-            
-            if (!isCodeInput) {
-                originalVerify();
-            }
-        }
-    });
-    
-    // Automatik kod to'ldirish (demo maqsadida)
-    // Haqiqiy loyihada bu qismni o'chirib qo'yishingiz mumkin
-    const demoAutoFill = sessionStorage.getItem('demoAutoFill');
-    if (!demoAutoFill && window.location.href.includes('localhost')) {
-        setTimeout(() => {
-            const inputs = document.querySelectorAll('.code-input');
-            const demoCode = "5689"; // Demo kod
-            for (let i = 0; i < Math.min(demoCode.length, inputs.length); i++) {
-                inputs[i].value = demoCode[i];
-                inputs[i].classList.add('filled');
-            }
-            updateFullCode();
-            sessionStorage.setItem('demoAutoFill', 'true');
-        }, 1000);
-    }
-});
