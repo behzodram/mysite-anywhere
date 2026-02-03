@@ -1,3 +1,4 @@
+v 1.4.9 => main: Deepseek changed all FILES working nice locally
 v 1.4.8 => main: Deepseek Req: changed app, bot, index, script style FILES Salom. Men senga note1.txt va hozirgi ishlab turgan flask web service source code larini jo'nataman. sen esa menga imkon qaday minimal qatorli hamda tushunarli holatda proyektimni har bit faylining keyingi versiyasini to'liq shaklda uzatasan. Tree.png ga etibor qil. Arxitektura buzilmasin. Kod minimal va sodda bo'lsin. 
 v 1.4.7 => main: LMOD No Change
 v 1.4.6 => main: Tahrirsiz izoh: front qismi reusage code after server delete key from redis tuzaldi. orginalVerify func ga almashtirilgan
