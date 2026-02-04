@@ -239,16 +239,6 @@
             opacity: 0.9;
         }
 
-        .session-timer {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 20px;
-            color: white;
-            text-align: center;
-        }
-
         .timer-label {
             font-size: 14px;
             margin-bottom: 5px;
@@ -315,7 +305,7 @@
             <div class="user-info">
                 <div class="user-id">
                     <i class="fab fa-telegram"></i>
-                    Telegram ID: {{ user_id }}
+                    @{{ username }}
                 </div>
                 <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i>
@@ -333,12 +323,6 @@
             <div class="verified-badge">
                 <i class="fas fa-check-circle"></i>
                 <span>Tasdiqlangan foydalanuvchi</span>
-            </div>
-            
-            <!-- Session Timer -->
-            <div class="session-timer">
-                <div class="timer-label">Sessiya vaqti:</div>
-                <div class="timer-value" id="sessionTimer">30:00</div>
             </div>
         </section>
 
@@ -450,29 +434,7 @@
         </footer>
     </div>
 
-    <script>
-        // Session timer
-        let sessionTime = 1800; // 30 minutes in seconds
-        const timerElement = document.getElementById('sessionTimer');
-        
-        function updateTimer() {
-            const minutes = Math.floor(sessionTime / 60);
-            const seconds = sessionTime % 60;
-            
-            timerElement.textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            if (sessionTime <= 0) {
-                alert('Sessiya vaqti tugadi. Qaytadan kirish kerak.');
-                logout();
-            } else {
-                sessionTime--;
-            }
-        }
-        
-        // Start timer
-        setInterval(updateTimer, 1000);
-        
+    <script>        
         // Check session status periodically
         async function checkSession() {
             try {
@@ -502,15 +464,6 @@
                 window.location.reload();
             }
         });
-        
-        // Auto-refresh session every 5 minutes
-        setInterval(async () => {
-            try {
-                await fetch('/api/refresh-session');
-            } catch (error) {
-                console.log('Session refresh failed');
-            }
-        }, 300000);
         
         // Initial animations
         document.addEventListener('DOMContentLoaded', function() {

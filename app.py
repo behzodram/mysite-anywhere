@@ -161,19 +161,5 @@ def session_check():
     session_data = json.loads(session_data.decode())
     return jsonify({"valid": session_data.get("verified", False)})
 
-@app.route("/api/refresh-session")
-def refresh_session():
-    """Refresh session TTL"""
-    session_id = session.get('session_id')
-    
-    if session_id:
-        session_data = r.get(f"session:{session_id}")
-        if session_data:
-            # Refresh TTL
-            r.expire(f"session:{session_id}", SESSION_TTL)
-            return jsonify({"refreshed": True})
-    
-    return jsonify({"refreshed": False}), 401
-
 if __name__ == "__main__":
     app.run(debug=FLASK_DEBUG)
