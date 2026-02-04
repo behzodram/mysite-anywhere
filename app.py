@@ -2,7 +2,7 @@ import os
 import redis
 import json
 import uuid
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from config import *
 
 # Initialize Redis
@@ -14,11 +14,43 @@ r = redis.Redis(
 app = Flask(__name__)
 app.secret_key = FLASK_SECRET_KEY
 
+@app.before_request
+def check_verification():
+    """Check if user is already verified before every request"""
+    # Skip for API endpoints and static files
+    if request.path.startswith('/static') or request.path.startswith('/api'):
+        return None
+    
+    # Skip for verify and logout endpoints
+    if request.path in ['/verify', '/logout']:
+        return None
+    
+    session_id = session.get('session_id')
+    
+    # If no session, create new one
+    if not session_id:
+        return None
+    
+    # Check if session exists in Redis
+    session_data = r.get(f"session:{session_id}")
+    if not session_data:
+        return None
+    
+    session_data = json.loads(session_data.decode())
+    
+    # If verified, redirect to dashboard (except for dashboard itself)
+    if session_data.get("verified") and request.path != '/dashboard':
+        return redirect('/dashboard')
+    
+    return None
+
 @app.route("/")
 def index():
-    """Main page - start verification"""
-    # Create session_id if not exists
-    if 'session_id' not in session:
+    """Main page - show only if not verified"""
+    session_id = session.get('session_id')
+    
+    # Create session if not exists
+    if not session_id:
         session_id = str(uuid.uuid4().hex[:12])
         session['session_id'] = session_id
         
@@ -27,11 +59,18 @@ def index():
             "verified": False
         }))
     
+    # Check if already verified
+    session_data = r.get(f"session:{session_id}")
+    if session_data:
+        session_data = json.loads(session_data.decode())
+        if session_data.get("verified"):
+            return redirect('/dashboard')
+    
     # Create bot deep link
-    bot_link = f"https://t.me/verify_claude_bot?start={session['session_id']}"
+    bot_link = f"https://t.me/verify_claude_bot?start={session_id}"
     
     return render_template("index.html", 
-                         session_id=session['session_id'],
+                         session_id=session_id,
                          bot_link=bot_link)
 
 @app.route("/verify", methods=["POST"])
@@ -67,7 +106,8 @@ def verify():
     # Mark session as verified
     r.setex(f"session:{session_id}", SESSION_TTL, json.dumps({
         "verified": True,
-        "telegram_id": code_data.get("telegram_id")
+        "telegram_id": code_data.get("telegram_id"),
+        "username": code_data.get("username")
     }))
     
     # Delete used code
@@ -94,7 +134,8 @@ def dashboard():
         return redirect("/")
     
     return render_template("dashboard.html", 
-                         user_id=session_data.get("telegram_id"))
+                         user_id=session_data.get("telegram_id"),
+                         username=session_data.get("username", "User"))
 
 @app.route("/logout")
 def logout():
@@ -104,6 +145,35 @@ def logout():
         r.delete(f"session:{session_id}")
     session.clear()
     return redirect("/")
+
+@app.route("/api/session-check")
+def session_check():
+    """Check if session is valid"""
+    session_id = session.get('session_id')
+    
+    if not session_id:
+        return jsonify({"valid": False}), 401
+    
+    session_data = r.get(f"session:{session_id}")
+    if not session_data:
+        return jsonify({"valid": False}), 401
+    
+    session_data = json.loads(session_data.decode())
+    return jsonify({"valid": session_data.get("verified", False)})
+
+@app.route("/api/refresh-session")
+def refresh_session():
+    """Refresh session TTL"""
+    session_id = session.get('session_id')
+    
+    if session_id:
+        session_data = r.get(f"session:{session_id}")
+        if session_data:
+            # Refresh TTL
+            r.expire(f"session:{session_id}", SESSION_TTL)
+            return jsonify({"refreshed": True})
+    
+    return jsonify({"refreshed": False}), 401
 
 if __name__ == "__main__":
     app.run(debug=FLASK_DEBUG)

@@ -1,3 +1,4 @@
+v 1.5.0 => main: Deepseek. dashb, index, app changed. Test TTL => session_ttl = 36, verify_ttl = 12 s asosiy sayt url ro'yxatdan o'tgan userni toki session_ttl exp gacha dashboardda tutib turadi hatto u url_path/index.html da bo'lsa ham uni index dashboardga otadi. exp time tugasa avtomatik verify ga yuboradi
 v 1.4.9 => main: Deepseek changed all FILES working nice locally
 v 1.4.8 => main: Deepseek Req: changed app, bot, index, script style FILES Salom. Men senga note1.txt va hozirgi ishlab turgan flask web service source code larini jo'nataman. sen esa menga imkon qaday minimal qatorli hamda tushunarli holatda proyektimni har bit faylining keyingi versiyasini to'liq shaklda uzatasan. Tree.png ga etibor qil. Arxitektura buzilmasin. Kod minimal va sodda bo'lsin. 
 v 1.4.7 => main: LMOD No Change

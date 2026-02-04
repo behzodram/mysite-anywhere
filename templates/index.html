@@ -7,9 +7,42 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Add to existing style.css */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #1e93c4 0%, #2aabee 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Loading overlay (will be hidden after check) -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
         <div class="telegram-logo">
             <i class="fab fa-telegram-plane"></i>
         </div>
@@ -88,5 +121,100 @@
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Check if user is already verified on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('/api/session-check');
+                const data = await response.json();
+                
+                if (data.valid) {
+                    // User is already verified, redirect to dashboard
+                    window.location.href = '/dashboard';
+                    return;
+                }
+                
+                // User not verified, show login page
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+                
+                // Initialize code input functionality
+                initializeCodeInput();
+                startTimer();
+                
+            } catch (error) {
+                console.error('Error checking session:', error);
+                // Show page anyway on error
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+                initializeCodeInput();
+                startTimer();
+            }
+        });
+
+        function initializeCodeInput() {
+            const inputs = document.querySelectorAll('.code-input');
+            
+            if (inputs.length > 0) {
+                inputs[0].focus();
+                
+                inputs.forEach(input => {
+                    input.addEventListener('input', function(e) {
+                        this.value = this.value.replace(/\D/g, '');
+                        
+                        if (this.value.length === 1) {
+                            const nextIndex = parseInt(this.dataset.index) + 1;
+                            if (nextIndex < inputs.length) {
+                                inputs[nextIndex].focus();
+                            }
+                        }
+                    });
+                    
+                    input.addEventListener('keydown', function(e) {
+                        if (e.key === 'Backspace' && this.value.length === 0) {
+                            const prevIndex = parseInt(this.dataset.index) - 1;
+                            if (prevIndex >= 0) {
+                                inputs[prevIndex].focus();
+                            }
+                        }
+                        
+                        if (e.key === 'ArrowLeft') {
+                            const prevIndex = parseInt(this.dataset.index) - 1;
+                            if (prevIndex >= 0) {
+                                inputs[prevIndex].focus();
+                            }
+                        }
+                        
+                        if (e.key === 'ArrowRight') {
+                            const nextIndex = parseInt(this.dataset.index) + 1;
+                            if (nextIndex < inputs.length) {
+                                inputs[nextIndex].focus();
+                            }
+                        }
+                        
+                        if (e.key === 'Enter') {
+                            verify();
+                        }
+                    });
+                    
+                    input.addEventListener('paste', function(e) {
+                        e.preventDefault();
+                        const pasteData = e.clipboardData.getData('text').replace(/\D/g, '');
+                        
+                        for (let i = 0; i < Math.min(pasteData.length, inputs.length); i++) {
+                            inputs[i].value = pasteData[i];
+                        }
+                        
+                        const nextEmptyIndex = Array.from(inputs).findIndex(input => input.value === '');
+                        if (nextEmptyIndex !== -1) {
+                            inputs[nextEmptyIndex].focus();
+                        } else {
+                            inputs[inputs.length - 1].focus();
+                        }
+                    });
+                });
+            }
+        }
+    </script>
 </body>
 </html>
