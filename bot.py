@@ -1,10 +1,10 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
-import redis
-import random
-import json
-import logging
+import random, json, logging
+from RedisFB import FbaseRedis
 from config import *
+
+r = FbaseRedis(CRED_FB_Redis_PATH, DB_FB_Redis_URL, CLAUDE_VERIFY_NAMESPACE)
 
 # Logging setup
 logging.basicConfig(
@@ -12,13 +12,6 @@ logging.basicConfig(
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
-
-# Redis connection
-r = redis.Redis(
-    host=REDIS_HOST, port=REDIS_PORT,
-    password=REDIS_PASSWORD, ssl=REDIS_SSL,
-    decode_responses=True
-)
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle /start command"""

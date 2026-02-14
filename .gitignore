@@ -1,5 +1,6 @@
 venv
 config.py
 serviceAccountKey.json
+serviceAccountRedis.json
 __pycache__/
 *.pyc

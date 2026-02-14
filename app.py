@@ -1,15 +1,9 @@
-import os
-import redis
-import json
-import uuid
+import os, json, uuid
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from RedisFB import FbaseRedis
 from config import *
 
-# Initialize Redis
-r = redis.Redis(
-    host=REDIS_HOST, port=REDIS_PORT,
-    password=REDIS_PASSWORD, ssl=REDIS_SSL
-)
+r = FbaseRedis(CRED_FB_Redis_PATH, DB_FB_Redis_URL, CLAUDE_VERIFY_NAMESPACE)
 
 app = Flask(__name__)
 app.secret_key = FLASK_SECRET_KEY
@@ -36,7 +30,7 @@ def check_verification():
     if not session_data:
         return None
     
-    session_data = json.loads(session_data.decode())
+    session_data = json.loads(session_data)
     
     # If verified, redirect to dashboard (except for dashboard itself)
     if session_data.get("verified") and request.path != '/dashboard':
@@ -62,7 +56,7 @@ def index():
     # Check if already verified
     session_data = r.get(f"session:{session_id}")
     if session_data:
-        session_data = json.loads(session_data.decode())
+        session_data = json.loads(session_data)
         if session_data.get("verified"):
             return redirect('/dashboard')
     
@@ -94,7 +88,7 @@ def verify():
         }), 401
     
     # Get code data
-    code_data = json.loads(r.get(key).decode())
+    code_data = json.loads(r.get(key))
     
     # Verify session_id matches
     if code_data.get("session_id") != session_id:
@@ -128,7 +122,7 @@ def dashboard():
     if not session_data:
         return redirect("/")
     
-    session_data = json.loads(session_data.decode())
+    session_data = json.loads(session_data)
     
     if not session_data.get("verified"):
         return redirect("/")
@@ -158,7 +152,7 @@ def session_check():
     if not session_data:
         return jsonify({"valid": False}), 401
     
-    session_data = json.loads(session_data.decode())
+    session_data = json.loads(session_data)
     return jsonify({"valid": session_data.get("verified", False)})
 
 if __name__ == "__main__":
