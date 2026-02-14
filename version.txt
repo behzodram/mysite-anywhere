@@ -1,3 +1,4 @@
+v 1.5.3 => main: READme edit for cloning anywhere project to another account
 v 1.5.2 => main: redis on FB tuzilmaga o'tildi (free planda upstash redish TCP ishlamagani un), avval repo cloned now pushing then del clone and pull to main rules: read/write: false but always true for firebase admin
 v 1.5.1 => main: dashboard html dan refresh session key sliding TTL olib tashlandi, app.pydan ham. bu degani avvalgi versiyadagi kabi brauzerda 5 minut online tursa server session_TTL ni sliding qilmaydi, normal ishlaydi degani. Local da test qilindi All is Ok
 v 1.5.0 => main: Deepseek. dashb, index, app changed. Test TTL => session_ttl = 36, verify_ttl = 12 s asosiy sayt url ro'yxatdan o'tgan userni toki session_ttl exp gacha dashboardda tutib turadi hatto u url_path/index.html da bo'lsa ham uni index dashboardga otadi. exp time tugasa avtomatik verify ga yuboradi
