@@ -1,0 +1,81 @@
+{
+  "rules": {
+    "ads": {
+      "$adId": {
+        "stats": {
+          ".read": true,
+          ".write": "auth != null"
+        },
+        "not_valid": {
+          ".write":
+            "auth != null && auth.token.username == root.child('ads/'+$adId+'/owner_uid').val()"
+        }
+      }
+    }
+  }
+}
+
+ads/
+   ad_1:
+       title: "Malibu sotiladi"
+       phone: "+998..."
+       username: "seller123"
+       created_at: 1234567890
+
+       stats:
+           views: 120
+           calls: 45
+           answered: 30
+           missed: 15
+           not_valid: 2
+
+user_ad_events/
+   user_1/
+       ad_1:
+           viewed: true
+           called: true
+           answered: false
+           marked_not_valid: false
+
+| Action     | Kim yozadi |
+| ---------- | ---------- |
+| Ads create | Admin      |
+| View       | Any user   |
+| Call stat  | Auth user  |
+| Counters   | Server     |
+| not_valid  | Owner      |
+| Filters    | User o'zi  |
+
+
+ad_views: {
+    "ad_1": 123,
+    "ad_2": 50
+}
+
+user_seen_ads: {
+    "uid_123": {
+        "history": {
+          "ad_1": true,
+          "ad_3": true
+        },
+        "changes": {
+            "ad_1": true,
+            "ad_2": true
+        }
+    },
+    "uid_456": {
+        "history": {
+          "ad_1": true,
+          "ad_3": true
+        },
+        "changes": {
+            "ad_1": true,
+            "ad_2": true
+        }
+    },
+}
+
+view_queue: {
+    "batch_1": ["uid_123:ad_1", "uid_123:ad_2", ...],
+    "batch_2": [...],
+}  buni kodida user_seen_ads ni

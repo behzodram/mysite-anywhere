@@ -30,8 +30,8 @@ def clean_expired():
         time.sleep(30)  # To avoid hitting rate limits
 
 def main():
-    # start_command(2000)
-    clean_expired()
+    start_command(2000)
+    # clean_expired()
 
 if __name__ == "__main__":
     main()

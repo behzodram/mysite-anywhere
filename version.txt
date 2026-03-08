@@ -1,3 +1,4 @@
+v 1.5.5 => main: yangi botni virtual guruhidan oldingi commit/ bunda FB da new user add, verify FB cache uchun TTL_PerMin.py, hijack.py test bor edi
 v 1.5.4 => main: RedisFB update. Well written setex/clear_expired funcs and well testes on Firebase DB all set/all cleared test successfull
 v 1.5.3 => main: READme edit for cloning anywhere project to another account
 v 1.5.2 => main: redis on FB tuzilmaga o'tildi (free planda upstash redish TCP ishlamagani un), avval repo cloned now pushing then del clone and pull to main rules: read/write: false but always true for firebase admin
